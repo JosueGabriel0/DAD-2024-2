@@ -53,10 +53,12 @@
     </dependencies>
     <dependencyManagement>
         <dependencies>
+            
+
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
+                <version>Hoxton.SR12</version> <!-- O la versión compatible con tu Spring Boot -->
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
