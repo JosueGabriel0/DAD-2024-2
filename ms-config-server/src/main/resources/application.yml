@@ -7,7 +7,7 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/ms-upeu/ProyectoMS.git
+          uri: https://github.com/JosueGabriel0/DAD-2024-2.git
           searchPaths: config-data
           #username:
           #password:
