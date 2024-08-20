@@ -9,7 +9,8 @@ springdoc:
     path: /doc/swagger-ui.html
 
 spring:
-  
+  application:
+    name: ms-catalogo-service
 
   jpa:
     hibernate:
