@@ -1,6 +1,6 @@
 spring:
   application:
-    name: ms-pedido-server
+    name: ms-pedido-service
   profiles:
     active: development
   config:
