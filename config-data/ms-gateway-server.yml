@@ -1,0 +1,66 @@
+server:
+  port: 9090
+
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8090/eureka
+  instance:
+    hostname: localhost
+
+
+spring:
+  cloud:
+
+
+    gateway:
+      discovery:
+        locator:
+          enable: true
+      routes:
+
+        - id: ms-catalogo-service
+          uri: lb://ms-catalogo-service
+          predicates:
+            - Path=/category/producto
+
+        - id: ms-pedido-service
+          uri: lb://ms-pedido-service
+          predicates:
+            - Path=/pedido/**
+
+        - id: ms-docente-service
+          uri: lb://ms-docente-service
+          predicates:
+            - Path=/docente/**
+
+        - id: ms-curso-service
+          uri: lb://ms-curso-service
+          predicates:
+            - Path=/curso/**
+
+        - id: ms-carrera-service
+          uri: lb://ms-carrera-service
+          predicates:
+            - Path=/carrera/**
+
+        - id: ms-planificacionAcademica-service
+          uri: lb://ms-planificacionAcademica-service
+          predicates:
+            - Path=/planificacionAcademica/**
+
+        - id: ms-calendarioAcademico-service
+          uri: lb://ms-calendarioAcademico-service
+          predicates:
+            - Path=/calendarioAcademico/**
+
+        - id: ms-evaluacionAcademica-service
+          uri: lb://ms-evaluacionAcademica-service
+          predicates:
+            - Path=/evaluacionAcademica/**
+
+        - id: ms-materialesEducativos-service
+          uri: lb://ms-materialesEducativos-service
+          predicates:
+            - Path=/materialesEducativos/**
