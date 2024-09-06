@@ -2,6 +2,7 @@ package upeu.edu.pe.mspedido.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import upeu.edu.pe.mspedido.dto.Producto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,7 +17,10 @@ public class PedidoDetalle {
 
     private Double cantidad;
     private Double precio;
-    private int productoId;
+    private long productoId;
+
+    @Transient
+    private Producto producto;
 
     public PedidoDetalle(){
         this.cantidad = (double) 0;
