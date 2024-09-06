@@ -33,7 +33,21 @@ public class PedidoSeviceImpl implements PedidoService {
 
     @Override
     public List<Pedido> listarPedido(){
-        return pedidoRepository.findAll();
+        List<Pedido> pedidos = pedidoRepository.findAll();
+
+        // Recorremos cada pedido y asignamos el cliente y detalles
+        pedidos.forEach(pedido -> {
+            Cliente cliente = clienteFeign.listarClienteDtoPorId(pedido.getClienteId()).getBody();
+            List<PedidoDetalle> pedidoDetalles = pedido.getDetalle().stream().map(pedidoDetalle -> {
+                Producto producto = productoFeign.listarProductoDtoPorId(pedidoDetalle.getProductoId()).getBody();
+                pedidoDetalle.setProducto(producto);
+                return pedidoDetalle;
+            }).collect(Collectors.toList());
+            pedido.setDetalle(pedidoDetalles);
+            pedido.setCliente(cliente);
+        });
+
+        return pedidos;
     }
 
     @Override
