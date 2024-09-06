@@ -5,3 +5,7 @@ spring:
     active: development
   config:
     import: optional:configserver:http://root:1234@localhost:7070
+
+feign:
+  hystrix:
+    enabled: true
