@@ -24,12 +24,12 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Category> buscarPorId(@PathVariable(required = true) Integer id) {
+    public ResponseEntity<Category> buscarPorId(@PathVariable(required = true) Long id) {
         return ResponseEntity.ok(CategoryService.buscarPorId(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Category> editar(@PathVariable(required = true) Integer id,
+    public ResponseEntity<Category> editar(@PathVariable(required = true) Long id,
                                             @RequestBody Category Category) {
         Category.setId(id);
         return ResponseEntity.ok(CategoryService.editar(Category));
@@ -37,7 +37,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
-    public String eliminar(@PathVariable(required = true) Integer id) {
+    public String eliminar(@PathVariable(required = true) Long id) {
         CategoryService.eliminar(id);
         return "Eliminacion correcta";
     }

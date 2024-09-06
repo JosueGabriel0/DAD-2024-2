@@ -9,10 +9,10 @@ public interface CategoryService {
 
     public Category guardar(Category Category);
 
-    public Category buscarPorId(Integer id);
+    public Category buscarPorId(Long id);
 
     public Category editar(Category Category);
 
-    public void eliminar(Integer id);
+    public void eliminar(Long id);
 
 }

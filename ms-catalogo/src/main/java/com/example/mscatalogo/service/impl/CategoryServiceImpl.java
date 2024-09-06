@@ -24,7 +24,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category buscarPorId(Integer id) {
+    public Category buscarPorId(Long id) {
         return CategoryRepository.findById(id).get();
     }
 
@@ -34,7 +34,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void eliminar(Integer id) {
+    public void eliminar(Long id) {
         CategoryRepository.deleteById(id);
     }
 }
