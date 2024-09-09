@@ -11,7 +11,6 @@ import upeu.edu.pe.mspedido.entity.Pedido;
 import upeu.edu.pe.mspedido.entity.PedidoDetalle;
 import upeu.edu.pe.mspedido.feign.ClienteFeign;
 import upeu.edu.pe.mspedido.feign.ProductoFeign;
-import upeu.edu.pe.mspedido.repository.PedidoRepository;
 import upeu.edu.pe.mspedido.service.PedidoService;
 
 import java.util.List;
