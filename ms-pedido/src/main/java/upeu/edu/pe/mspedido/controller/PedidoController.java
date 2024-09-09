@@ -14,7 +14,6 @@ import upeu.edu.pe.mspedido.feign.ProductoFeign;
 import upeu.edu.pe.mspedido.service.PedidoService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/pedido")
