@@ -31,17 +31,19 @@ public class PedidoController {
     public ResponseEntity<?> guardarPedidoResponseEntity(@RequestBody Pedido pedido) {
         try {
             // Verificar si el cliente existe
-            Cliente cliente = clienteFeign.listarClienteDtoPorId(pedido.getClienteId()).getBody();
-            if (cliente == null) {
+            ResponseEntity<Cliente> clienteResponse = clienteFeign.listarClienteDtoPorId(pedido.getClienteId());
+            if (clienteResponse.getStatusCode() == HttpStatus.NOT_FOUND || clienteResponse.getBody() == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe el cliente");
             }
+            Cliente cliente = clienteResponse.getBody();
 
             // Verificar si cada producto en los detalles existe antes de procesarlos
             for (PedidoDetalle pedidoDetalle : pedido.getDetalle()) {
-                Producto producto = productoFeign.listarProductoDtoPorId(pedidoDetalle.getProductoId()).getBody();
-                if (producto == null) {
+                ResponseEntity<Producto> productoResponse = productoFeign.listarProductoDtoPorId(pedidoDetalle.getProductoId());
+                if (productoResponse.getStatusCode() == HttpStatus.NOT_FOUND || productoResponse.getBody() == null) {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe el producto");
                 }
+                Producto producto = productoResponse.getBody();
                 // Asignar el producto al detalle
                 pedidoDetalle.setProducto(producto);
             }
@@ -59,8 +61,9 @@ public class PedidoController {
             return ResponseEntity.status(HttpStatus.CREATED).body(pedidoGuardado);
 
         } catch (FeignException e) {
-            // Manejo de error cuando Feign falla
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al comunicarse con otro servicio");
+            // Imprimir los detalles del error que Feign está arrojando
+            String errorMensaje = "Error al comunicarse con otro servicio: " + e.getMessage();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMensaje);
 
         } catch (Exception e) {
             // Manejo de cualquier otro error inesperado
