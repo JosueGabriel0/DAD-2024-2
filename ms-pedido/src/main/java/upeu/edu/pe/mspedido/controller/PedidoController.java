@@ -1,5 +1,6 @@
 package upeu.edu.pe.mspedido.controller;
 
+import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,33 +29,43 @@ public class PedidoController {
 
     @PostMapping
     public ResponseEntity<?> guardarPedidoResponseEntity(@RequestBody Pedido pedido) {
-        // Verificar si el cliente existe
-        Cliente cliente = clienteFeign.listarClienteDtoPorId(pedido.getClienteId()).getBody();
-        if (cliente == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe el cliente");
-        }
-
-        // Verificar si cada producto en los detalles existe
-        List<PedidoDetalle> pedidoDetalles = pedido.getDetalle().stream().map(pedidoDetalle -> {
-            Producto producto = productoFeign.listarProductoDtoPorId(pedidoDetalle.getProductoId()).getBody();
-            if (producto == null) {
-                throw new RuntimeException("No existe el producto con su categoría");
+        try {
+            // Verificar si el cliente existe
+            Cliente cliente = clienteFeign.listarClienteDtoPorId(pedido.getClienteId()).getBody();
+            if (cliente == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe el cliente");
             }
-            pedidoDetalle.setProducto(producto);
-            return pedidoDetalle;
-        }).collect(Collectors.toList());
 
-        // Asignar los detalles actualizados
-        pedido.setDetalle(pedidoDetalles);
+            // Verificar si cada producto en los detalles existe antes de procesarlos
+            for (PedidoDetalle pedidoDetalle : pedido.getDetalle()) {
+                Producto producto = productoFeign.listarProductoDtoPorId(pedidoDetalle.getProductoId()).getBody();
+                if (producto == null) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe el producto");
+                }
+                // Asignar el producto al detalle
+                pedidoDetalle.setProducto(producto);
+            }
 
-        // Asignar el cliente al pedido
-        pedido.setCliente(cliente);
+            // Asignar los detalles actualizados
+            pedido.setDetalle(pedido.getDetalle());
 
-        // Guardar el pedido si todas las validaciones pasaron
-        Pedido pedidoGuardado = pedidoService.guardarPedido(pedido);
+            // Asignar el cliente al pedido
+            pedido.setCliente(cliente);
 
-        // Retornar respuesta exitosa
-        return ResponseEntity.status(HttpStatus.CREATED).body(pedidoGuardado);
+            // Guardar el pedido si todas las validaciones pasaron
+            Pedido pedidoGuardado = pedidoService.guardarPedido(pedido);
+
+            // Retornar respuesta exitosa
+            return ResponseEntity.status(HttpStatus.CREATED).body(pedidoGuardado);
+
+        } catch (FeignException e) {
+            // Manejo de error cuando Feign falla
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al comunicarse con otro servicio");
+
+        } catch (Exception e) {
+            // Manejo de cualquier otro error inesperado
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
+        }
     }
 
     @GetMapping
